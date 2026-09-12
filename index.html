@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="bg">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>УчиAI — AI учебен помощник</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f6f7fb;color:#171827}
+header{height:68px;background:white;border-bottom:1px solid #e7e7ef;display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;z-index:4}.logo{font-size:22px;font-weight:800;color:#6455f5}.badge{font-size:12px;background:#eeeaff;color:#5545df;padding:7px 11px;border-radius:20px}
+.hero{text-align:center;padding:48px 20px 28px}.hero h1{font-size:clamp(38px,6vw,64px);line-height:1.05;margin:10px 0;letter-spacing:-2px}.hero h1 span{color:#6557f5}.hero p{max-width:650px;margin:auto;color:#707384;line-height:1.6;font-size:17px}
+.wrap{max-width:1050px;margin:auto;padding:0 18px 60px}.app{background:white;border:1px solid #e6e6ef;border-radius:22px;padding:20px;box-shadow:0 15px 45px #27254a12}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}.tab{border:1px solid #e3e3ed;background:#fafaff;padding:10px 14px;border-radius:10px;font-weight:650;cursor:pointer}.tab.active{background:#eeeaff;border-color:#d8d2ff;color:#5444df}
+.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:16px}.card{border:1px solid #e7e7ef;border-radius:16px;padding:20px;background:#fcfcff}textarea{width:100%;height:120px;border:1px solid #dddde8;border-radius:12px;padding:13px;font:inherit;outline:none}textarea:focus{border-color:#8a7cf8}.buttons{display:flex;gap:9px;margin-top:10px;flex-wrap:wrap}button{cursor:pointer;border:0;border-radius:10px;padding:11px 15px;font-weight:700}.primary{background:#6557f5;color:white}.secondary{background:#efedff;color:#5545df}.answer{display:none;margin-top:14px;background:#f2f0ff;border-radius:12px;padding:14px;line-height:1.55}
+.progress{height:9px;background:#e8e8f1;border-radius:99px;overflow:hidden}.progress i{display:block;width:0;height:100%;background:#6557f5;transition:.5s}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.feature{background:white;border:1px solid #e7e7ef;border-radius:15px;padding:18px}.feature b{display:block;margin:8px 0}.feature p{font-size:14px;color:#707384;line-height:1.5}
+footer{text-align:center;color:#8a8b98;padding:25px}
+@media(max-width:720px){.grid,.features{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="logo">УчиAI</div><div class="badge">Бета версия</div></header>
+<section class="hero"><div class="badge">🤖 AI учебен помощник</div><h1>Разбери урока.<br><span>Не просто отговора.</span></h1><p>Напиши въпрос или задача и УчиAI ще ти помогне да разбереш материала стъпка по стъпка.</p></section>
+<div class="wrap"><div class="app">
+<div class="tabs">
+<button class="tab active" onclick="mode('chat',this)">💬 Помощник</button>
+<button class="tab" onclick="mode('quiz',this)">🧠 Тест</button>
+<button class="tab" onclick="mode('cards',this)">🔄 Флашкарти</button>
+</div>
+<div class="grid">
+<div class="card">
+<h2 id="title">Какво учиш днес?</h2><p id="hint" style="color:#707384">Напиши въпрос, задача или тема.</p>
+<textarea id="q" placeholder="Например: Обясни ми Питагоровата теорема като за 7. клас."></textarea>
+<div class="buttons"><button class="primary" onclick="run()">✨ Помогни ми</button><button class="secondary" onclick="resetBox()">Изчисти</button></div>
+<div class="answer" id="answer"></div>
+</div>
+<div class="card"><h3>🎯 Твоят прогрес</h3><p style="color:#707384">Учебна сесия</p><div class="progress"><i id="bar"></i></div><h2 id="percent">0%</h2><p style="color:#707384;font-size:14px">Започни с един въпрос.</p></div>
+</div></div>
+<div class="features"><div class="feature">📸<b>Задачи от снимка</b><p>В следваща версия ще можеш да снимаш задача и AI да я анализира.</p></div><div class="feature">🧠<b>Персонални тестове</b><p>Генерирай въпроси според предмета, темата и нивото.</p></div><div class="feature">📚<b>Уроци → флашкарти</b><p>Превръщай учебния материал в удобни карти за упражнение.</p></div></div></div>
+<footer>УчиAI — прототип</footer>
+<script>
+let count=0, current='chat';
+function mode(m,el){current=m;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');let t=document.getElementById('title'),h=document.getElementById('hint'),q=document.getElementById('q');if(m==='chat'){t.textContent='Какво учиш днес?';h.textContent='Напиши въпрос, задача или тема.';q.placeholder='Например: Обясни ми Питагоровата теорема като за 7. клас.'}if(m==='quiz'){t.textContent='Създай си тест';h.textContent='Напиши предмет и тема.';q.placeholder='Например: Биология — клетката, 7. клас.'}if(m==='cards'){t.textContent='Направи флашкарти';h.textContent='Напиши тема за упражнение.';q.placeholder='Например: История — Възраждане.'}}
+function run(){let v=document.getElementById('q').value.trim(),a=document.getElementById('answer');if(!v){a.innerHTML='Напиши въпрос или тема, за да започнем. 🙂';a.style.display='block';return}count=Math.min(100,count+20);document.getElementById('bar').style.width=count+'%';document.getElementById('percent').textContent=count+'%';if(current==='chat')a.innerHTML='<b>УчиAI:</b><br>Получих въпроса ти: „'+escapeHtml(v)+'“.<br><br>В реалната AI версия тук ще се генерира обяснение според твоя клас и ниво — ясно, кратко и стъпка по стъпка.';if(current==='quiz')a.innerHTML='<b>Тест:</b><br>Ще създам въпроси по темата „'+escapeHtml(v)+'“ и ще проверявам отговорите ти един по един.';if(current==='cards')a.innerHTML='<b>Флашкарти:</b><br>Ще превърна „'+escapeHtml(v)+'“ в карти с въпрос отпред и обяснение отзад.';a.style.display='block'}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function resetBox(){document.getElementById('q').value='';document.getElementById('answer').style.display='none'}
+</script>
+</body></html>
